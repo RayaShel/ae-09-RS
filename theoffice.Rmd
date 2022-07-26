@@ -1,7 +1,9 @@
 ---
 title: "The Office"
-author: "Mine Çetinkaya-Rundel"
+author: "Raya Shelashska"
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r load-packages, message = FALSE}
@@ -24,6 +26,10 @@ theoffice <- theoffice %>%
   mutate(air_date = ymd(as.character(air_date)))
 ```
 
+```{r}
+glimpse(theoffice)
+```
+
 We will
 
 -   engineer features based on episode scripts
@@ -41,7 +47,11 @@ theoffice %>%
 ### Exercise 1 - Calculate the percentage of lines spoken by Jim, Pam, Michael, and Dwight for each episode of The Office.
 
 ```{r lines}
-
+office_lines <- theoffice %>%
+  group_by(season, episode) %>%
+  mutate(n_lines = n()) %>%
+  relocate(n_lines) %>%
+  print()
 ```
 
 ### Exercise 2 - Identify episodes that touch on Halloween, Valentine's Day, and Christmas.
