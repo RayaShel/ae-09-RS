@@ -193,10 +193,27 @@ christmas_episodes <- theoffice %>%
 
 ### Exercise 3 - Put together a modeling dataset that includes features you’ve engineered. Also add an indicator variable called `michael` which takes the value `1` if Michael Scott (Steve Carrell) was there, and `0` if not. Note: Michael Scott (Steve Carrell) left the show at the end of Season 7.
 
+``` r
+office_df <- theoffice %>%
+select(season, episode, episode_name, imdb_rating, total_votes, air_date)%>%
+  distinct(season, episode, .keep_all = TRUE)%>%
+  left_join(halloween_episodes, by = "episode_name") %>%
+  left_join(valentine_episodes, by = "episode_name") %>%
+  left_join(christmas_episodes, by = "episode_name") %>%
+  replace_na(list(halloween = 0, valentine = 0, christmas = 0)) %>%
+  mutate(michael = if_else(season >7, 0, 1)) %>%
+  mutate(across(halloween:michael, as.factor)) %>%
+  left_join(office_lines, by = c("season", "episode", "episode_name"))
+```
+
 ### Exercise 4 - Split the data into training (75%) and testing (25%).
 
 ``` r
 set.seed(1122)
+
+office_split <- initial_split(office_df)
+office_train <- training(office_split)
+office_test <- testing(office_split)
 ```
 
 ### Exercise 5 - Specify a linear regression model.
