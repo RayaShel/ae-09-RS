@@ -11,6 +11,7 @@ library(tidyverse)
 library(tidymodels)
 library(schrute)
 library(lubridate)
+library(stringr)
 ```
 
 Use `theoffice` data from the [**schrute**](https://bradlindblad.github.io/schrute/) package to predict IMDB scores for episodes of The Office.
@@ -62,8 +63,33 @@ office_lines <- theoffice %>%
 
 ### Exercise 2 - Identify episodes that touch on Halloween, Valentine's Day, and Christmas.
 
-```{r special-episodes}
+```{r special-episodes_h}
+theoffice <- theoffice %>%
+  mutate(text = tolower(text))
 
+halloween_episodes <- theoffice %>%
+  filter(str_detect(text, "halloween")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(halloween = 1) %>%
+  select(-n) %>%
+  print()
+
+valentine_episodes <- theoffice %>%
+  filter(str_detect(text, "valentine")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(valentine = 1) %>%
+  select(-n) %>%
+  print()
+
+christmas_episodes <- theoffice %>%
+  filter(str_detect(text, "christmas")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(christmas = 1) %>%
+  select(-n) %>%
+  print()
 ```
 
 ### Exercise 3 - Put together a modeling dataset that includes features you've engineered. Also add an indicator variable called `michael` which takes the value `1` if Michael Scott (Steve Carrell) was there, and `0` if not. Note: Michael Scott (Steve Carrell) left the show at the end of Season 7.

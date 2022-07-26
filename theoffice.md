@@ -7,6 +7,7 @@ library(tidyverse)
 library(tidymodels)
 library(schrute)
 library(lubridate)
+library(stringr)
 ```
 
 Use `theoffice` data from the
@@ -123,6 +124,72 @@ office_lines <- theoffice %>%
     ## # ℹ Use `print(n = ...)` to see more rows
 
 ### Exercise 2 - Identify episodes that touch on Halloween, Valentine’s Day, and Christmas.
+
+``` r
+theoffice <- theoffice %>%
+  mutate(text = tolower(text))
+
+halloween_episodes <- theoffice %>%
+  filter(str_detect(text, "halloween")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(halloween = 1) %>%
+  select(-n) %>%
+  print()
+```
+
+    ## # A tibble: 5 × 2
+    ##   episode_name      halloween
+    ##   <chr>                 <dbl>
+    ## 1 Costume Contest           1
+    ## 2 Employee Transfer         1
+    ## 3 Halloween                 1
+    ## 4 Here Comes Treble         1
+    ## 5 Spooked                   1
+
+``` r
+valentine_episodes <- theoffice %>%
+  filter(str_detect(text, "valentine")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(valentine = 1) %>%
+  select(-n) %>%
+  print()
+```
+
+    ## # A tibble: 5 × 2
+    ##   episode_name                 valentine
+    ##   <chr>                            <dbl>
+    ## 1 Blood Drive                          1
+    ## 2 Couples Discount                     1
+    ## 3 PDA                                  1
+    ## 4 The Manager and the Salesman         1
+    ## 5 Valentine's Day                      1
+
+``` r
+christmas_episodes <- theoffice %>%
+  filter(str_detect(text, "christmas")) %>%
+  count(episode_name) %>%
+  filter(n > 1) %>%
+  mutate(christmas = 1) %>%
+  select(-n) %>%
+  print()
+```
+
+    ## # A tibble: 11 × 2
+    ##    episode_name                     christmas
+    ##    <chr>                                <dbl>
+    ##  1 A Benihana Christmas (Parts 1&2)         1
+    ##  2 Christmas Party                          1
+    ##  3 Christmas Wishes                         1
+    ##  4 Classy Christmas (Parts 1&2)             1
+    ##  5 Cocktails                                1
+    ##  6 Conflict Resolution                      1
+    ##  7 Did I Stutter?                           1
+    ##  8 Dwight Christmas                         1
+    ##  9 Moroccan Christmas                       1
+    ## 10 Night Out                                1
+    ## 11 Secret Santa                             1
 
 ### Exercise 3 - Put together a modeling dataset that includes features you’ve engineered. Also add an indicator variable called `michael` which takes the value `1` if Michael Scott (Steve Carrell) was there, and `0` if not. Note: Michael Scott (Steve Carrell) left the show at the end of Season 7.
 
