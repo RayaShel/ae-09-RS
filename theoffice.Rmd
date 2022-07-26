@@ -49,8 +49,14 @@ theoffice %>%
 ```{r lines}
 office_lines <- theoffice %>%
   group_by(season, episode) %>%
-  mutate(n_lines = n()) %>%
-  relocate(n_lines) %>%
+  mutate(n_lines = n(), 
+         lines_jim = sum(character == "Jim")/n_lines, 
+         lines_pam = sum(character == "Pam")/n_lines,
+         lines_michael = sum(character == "Michael")/n_lines,
+         lines_dwight = sum(character == "Dwight")/n_lines) %>%
+  ungroup() %>%
+  select(season, episode, episode_name, contains("lines_")) %>%
+  distinct(season, episode, episode_name, .keep_all = TRUE) %>%
   print()
 ```
 

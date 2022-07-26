@@ -95,29 +95,32 @@ theoffice %>%
 ``` r
 office_lines <- theoffice %>%
   group_by(season, episode) %>%
-  mutate(n_lines = n()) %>%
-  relocate(n_lines) %>%
+  mutate(n_lines = n(), 
+         lines_jim = sum(character == "Jim")/n_lines, 
+         lines_pam = sum(character == "Pam")/n_lines,
+         lines_michael = sum(character == "Michael")/n_lines,
+         lines_dwight = sum(character == "Dwight")/n_lines) %>%
+  ungroup() %>%
+  select(season, episode, episode_name, contains("lines_")) %>%
+  distinct(season, episode, episode_name, .keep_all = TRUE) %>%
   print()
 ```
 
-    ## # A tibble: 55,130 × 13
-    ## # Groups:   season, episode [186]
-    ##    n_lines index season episode episode_n…¹ direc…² writer chara…³ text  text_…⁴
-    ##      <int> <int>  <int>   <int> <chr>       <chr>   <chr>  <chr>   <chr> <chr>  
-    ##  1     229     1      1       1 Pilot       Ken Kw… Ricky… Michael All … All ri…
-    ##  2     229     2      1       1 Pilot       Ken Kw… Ricky… Jim     Oh, … Oh, I …
-    ##  3     229     3      1       1 Pilot       Ken Kw… Ricky… Michael So y… So you…
-    ##  4     229     4      1       1 Pilot       Ken Kw… Ricky… Jim     Actu… Actual…
-    ##  5     229     5      1       1 Pilot       Ken Kw… Ricky… Michael All … All ri…
-    ##  6     229     6      1       1 Pilot       Ken Kw… Ricky… Michael Yes,… [on th…
-    ##  7     229     7      1       1 Pilot       Ken Kw… Ricky… Michael I've… I've, …
-    ##  8     229     8      1       1 Pilot       Ken Kw… Ricky… Pam     Well… Well. …
-    ##  9     229     9      1       1 Pilot       Ken Kw… Ricky… Michael If y… If you…
-    ## 10     229    10      1       1 Pilot       Ken Kw… Ricky… Pam     What? What?  
-    ## # … with 55,120 more rows, 3 more variables: imdb_rating <dbl>,
-    ## #   total_votes <int>, air_date <date>, and abbreviated variable names
-    ## #   ¹​episode_name, ²​director, ³​character, ⁴​text_w_direction
-    ## # ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
+    ## # A tibble: 186 × 7
+    ##    season episode episode_name      lines_jim lines_pam lines_michael lines_dw…¹
+    ##     <int>   <int> <chr>                 <dbl>     <dbl>         <dbl>      <dbl>
+    ##  1      1       1 Pilot                0.157     0.179          0.354     0.127 
+    ##  2      1       2 Diversity Day        0.123     0.0591         0.369     0.0837
+    ##  3      1       3 Health Care          0.172     0.131          0.230     0.254 
+    ##  4      1       4 The Alliance         0.202     0.0905         0.280     0.193 
+    ##  5      1       5 Basketball           0.0913    0.0609         0.452     0.109 
+    ##  6      1       6 Hot Girl             0.159     0.130          0.306     0.0809
+    ##  7      2       1 The Dundies          0.125     0.160          0.375     0.125 
+    ##  8      2       2 Sexual Harassment    0.0565    0.0954         0.353     0.0389
+    ##  9      2       3 Office Olympics      0.196     0.117          0.295     0.196 
+    ## 10      2       4 The Fire             0.160     0.0690         0.216     0.204 
+    ## # … with 176 more rows, and abbreviated variable name ¹​lines_dwight
+    ## # ℹ Use `print(n = ...)` to see more rows
 
 ### Exercise 2 - Identify episodes that touch on Halloween, Valentine’s Day, and Christmas.
 
